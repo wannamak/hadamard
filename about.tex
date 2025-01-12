@@ -71,11 +71,19 @@ Properties:
 \section{Choosing a construction}
 
 The Paley Construction method for Hadamard matrices are based on a prime or a prime
-power.  The order is related to the prime or prime power by:
+power.  The order is related to the prime or prime power by either:
 \begin{equation}
+n = p^k + 1
 \end{equation}
+or
+\begin{equation}
+n = 2 (p^k + 1)
+\end{equation}
+depending on the construction method.  Table 1 shows different alternatives for
+Paley construction of order $\le 200$.  Notably absent are orders such as 16, which
+cannot be constructed by Paley's methods but which can be constructed by other techniques.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Paley Constructions through order 200}
     \begin{tblr}{colspec = { c c c @{\hskip 2cm} c c c },
