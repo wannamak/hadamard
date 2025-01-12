@@ -1,22 +1,11 @@
 package hadamard;
 
-import cc.redberry.rings.Rational;
-import cc.redberry.rings.Ring;
-import cc.redberry.rings.bigint.BigInteger;
-import cc.redberry.rings.io.Coder;
-import cc.redberry.rings.poly.FiniteField;
-import cc.redberry.rings.poly.univar.UnivariatePolynomial;
-import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 
-import java.util.*;
-
-import static cc.redberry.rings.Rings.GF;
-import static cc.redberry.rings.Rings.Q;
-
-
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Paley {
   public static void main(String args[]) throws Exception {
@@ -24,15 +13,46 @@ public class Paley {
   }
 
   public void run() throws Exception {
-    generateConstructionParameters();
     check(1, 3, 1, 4);
     check(1, 7, 1, 8);
     check(1, 11, 1, 12);
+    check(2, 5, 1, 12);
     check(1, 19, 1, 20);
+    check(2, 3, 2, 20);
     check(1, 23, 1, 24);
     check(2, 13, 1, 28);
+    check(1, 3, 3, 28);
     check(1, 31, 1, 32);
     check(2, 17, 1, 36);
+    check(1, 43, 1, 44);
+    check(1, 47, 1, 48);
+    check(2, 5, 2, 52);
+    check(1, 59, 1, 60);
+    check(2, 29, 1, 60);
+    check(1, 67, 1, 68);
+    check(1, 71, 1, 72);
+    check(2, 37, 1, 76);
+    check(1, 79, 1, 80);
+    check(2, 41, 1, 84);
+    check(1, 83, 1, 84);
+    check(2, 7, 2, 100);
+    check(1, 103, 1, 104);
+    check(2, 53, 1, 108);
+    check(1, 107, 1, 108);
+    check(2, 61, 1, 124);
+    check(1, 127, 1, 128);
+    check(1, 131, 1, 132);
+    check(1, 139, 1, 140);
+    check(2, 73, 1, 148);
+    check(1, 151, 1, 152);
+    check(2, 3, 4, 164);
+    check(1, 163, 1, 164);
+    check(1, 167, 1, 168);
+    check(1, 179, 1, 180);
+    check(2, 89, 1, 180);
+    check(1, 191, 1, 192);
+    check(2, 97, 1, 196);
+    check(1, 199, 1, 200);
     System.out.println("All valid.");
   }
 
@@ -46,55 +66,7 @@ public class Paley {
           p, exponent, constructionType, expectedOrder, matrix));
   }
 
-  static class ConstructionMethod {
-    enum Method { ONE, TWO };
-    Method method;
-    int p;
-    int k;
-    public ConstructionMethod(Method method, int p, int k) {
-      this.method = method;
-      this.p = p;
-      this.k = k;
-    }
-  }
-
-  public void generateConstructionParameters() {
-    Multimap<Integer, ConstructionMethod> params = ArrayListMultimap.create();
-    for (int p : ODD_PRIME_BELOW_ONE_HUNDRED) {
-      for (int k = 1; k < 10; k++) {
-        int q = (int) Math.pow(p, k);
-        if (q > 2000) {
-          continue;
-        }
-        if (q % 4 == 3) {
-          params.put(q + 1, new ConstructionMethod(ConstructionMethod.Method.ONE, p, k));
-        } else if (q % 4 == 1) {
-          params.put(2 * (q+1), new ConstructionMethod(ConstructionMethod.Method.TWO, p, k));
-        }
-      }
-    }
-    List<Integer> orders = new ArrayList<>(params.keys().elementSet());
-    Collections.sort(orders);
-    for (int order : orders) {
-      String pk = "";
-      String methods = "";
-      for (ConstructionMethod method : params.get(order)) {
-        if (!pk.isEmpty()) {
-          pk += ", ";
-          methods += ", ";
-        }
-        if (method.k == 1) {
-          pk += Integer.toString(method.p);
-        } else {
-          pk += String.format("%d^%d", method.p, method.k);
-        }
-        methods += method.method == ConstructionMethod.Method.ONE ? "I" : "II";
-      }
-      System.out.printf("     %2d &  %s &  %s \\\\\n", order, pk, methods);
-    }
-  }
-
-  Set<Integer> ODD_PRIME_BELOW_ONE_HUNDRED = Set.of(3, 5, 7, 11,
+  public static Set<Integer> ODD_PRIME_BELOW_TWO_HUNDRED = Set.of(3, 5, 7, 11,
       13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
       73, 79, 83, 89, 97,
       101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157,
@@ -107,7 +79,7 @@ public class Paley {
    * Skew matrix (X = -X^T) (?)
    */
   public Matrix paleyConstructionOne(int p, int exponent) {
-    Preconditions.checkState(ODD_PRIME_BELOW_ONE_HUNDRED.contains(p), "p not prime?");
+    Preconditions.checkState(ODD_PRIME_BELOW_TWO_HUNDRED.contains(p), "p not prime?");
     int q = (int) Math.pow(p, exponent);
     Preconditions.checkState(q % 4 == 3, "q mod 4 != 3");
 
@@ -132,7 +104,7 @@ public class Paley {
    * Symmetric matrix (X = X^T) (?)
    */
   public Matrix paleyConstructionTwo(int p, int exponent) {
-    Preconditions.checkState(ODD_PRIME_BELOW_ONE_HUNDRED.contains(p), "p not prime?");
+    Preconditions.checkState(ODD_PRIME_BELOW_TWO_HUNDRED.contains(p), "p not prime?");
     int q = (int) Math.pow(p, exponent);
     Preconditions.checkState(q % 4 == 1, "q mod 4 != 1");
 
