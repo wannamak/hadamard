@@ -13,6 +13,19 @@ public class Paley {
   }
 
   public void run() throws Exception {
+    int[][] four = new int[][] {
+        {1,1,1,1},
+        {1,1,-1,-1},
+        {1,-1,-1,1},
+        {1,-1,1,-1}
+    };
+    Matrix hadamard = new Matrix(four);
+    System.out.println(hadamard);
+    System.out.println(hadamard.transpose());
+    System.out.println(hadamard.times(hadamard.transpose()));
+  }
+
+  public void runToCheckTableOne() throws Exception {
     check(1, 3, 1, 4);
     check(1, 7, 1, 8);
     check(1, 11, 1, 12);
