@@ -188,4 +188,19 @@ public class Matrix {
     }
     return result;
   }
+
+  public String toTexString() {
+    String result = "\\begin{equation}\n" +
+        "\\begin{pmatrix}\n";
+    for (int row = 0; row < matrix.length; row++) {
+      for (int column = 0; column < matrix.length; column++) {
+        result += String.format("%s%s", column == 0 ? "" : " & ",
+            matrix[row][column] == -1 ? "-" : "1");
+      }
+      result += " \\\\\n";
+    }
+    result += "\\end{pmatrix}\n" +
+        "\\end{equation}\n";
+    return result;
+  }
 }
