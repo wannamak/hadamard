@@ -2,6 +2,6 @@
 pdflatex \
   -halt-on-error \
   -output-directory /tmp \
-  about.tex \
+  hadamard.tex \
 && \
-  cp /tmp/about.pdf .
+  cp /tmp/hadamard.pdf .
